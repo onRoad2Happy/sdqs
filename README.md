@@ -1,26 +1,24 @@
 # insight-project
 
-
-
 ## Project Idea
 
-aws spot instance recommendation is a web application with data pipeline supporting current instances availability, recommending request spot fleet helping client to build a fault-tolerance and economical application.
+data quality is important not only in batch processing but also in streaming, I want to provide a plateform for users to do data quality test for their dataset.
 
 ## Purpose
-
-Using different types of instaces, weighting may affect the final price, aws only support in zone evaluation of multiple instances. I want to support in stream analysis such as the deviation of prices in different zone which would affect the fault-tolerance system. And also give warning to users for those instances that currently fluctuate a lot in a reasonable hours.
+Build batch accuracy.
+Build streaming accuracy.
+Build data profiling.
+Building anomaly detection.
 
 ## Major user case
 
-1. user query spot instances, and application give availability 
-2. user gives cpu, memory, location, show the availability instances and the estimated costs, interruption probability.
-3. user only gives cpu, memory show the estimated number of instances of different type, and instance number and estimated costs by zone.
-4. if user don’t care about zone, gives instances where has lowest price in particular zone
-5. if current zone has not enough instances for particular user (really unlikely) suggest different zone’s instances to them
-6. generate a recommendation sheet which contains instances types, average spot price, zone, interruption likelihood.
-7. show product price visualization.
-8. user can check his history recommendation data.
-9. user browsed some sample recommendation sheet.
+1. anomaly detection.
+2. Many data source is not always reliable. We cannot only rely on the schemas of data sometimes the data in right format but still has many values are empty or null or the number are too bigor too small, distribution of the data may not correct, the column of the data should be distinct but not.
 
 ### Architecture
-![alt text](https://github.com/shawntsai/insight-project/blob/master/architect_insight.png)
+
+
+Kafka
+
+
+![alt text](https://github.com/shawntsai/insight-project/blob/master/Data%20Quality%20Diagram.png)
