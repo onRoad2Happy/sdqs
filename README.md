@@ -15,30 +15,29 @@ data quality is important not only in batch processing but also in streaming, I 
 1. anomaly detection.
 2. Many data source is not always reliable. We cannot only rely on the schemas of data sometimes the data in right format but still has many values are empty or null or the number are too bigor too small, distribution of the data may not correct, the column of the data should be distinct but not.
 
-### Architecture
- ![alt text](https://github.com/shawntsai/insight-project/blob/master/Data%20Quality%20Diagram.png)
-
-
-
-![alt text](https://github.com/shawntsai/insight-project/blob/master/join.png)
-
-ubuntu@ip-10-0-0-14:~/insight-project$ /usr/local/spark/bin/spark-submit generate_simulate_data.py
-number of rows: 10000
+## compare result for number rows
+1. number of rows: 10000
 accuracy  1.0
 --- 7.37636089325 seconds ---
-number of rows: 100000
+2. number of rows: 100000
 accuracy  1.0
 --- 3.09207892418 seconds ---
-number of rows: 10000000
+3. number of rows: 10000000
 accuracy  1.0
 --- 58.5976111889 seconds ---
+
+## compare result for number of repeated keys
 ------------------------------------------------------------------------------------------------------
-number of repeated times: 1
-accuracy  1.0
---- 12.6373000145 seconds ---
-number of repeated times: 10
-accuracy  1.0
+1. number of repeated times: 1
+ --- 12.6373000145 seconds ---
+2. number of repeated times: 10
 --- 8.45805907249 seconds ---
-number of repeated times: 50
-accuracy  1.0
+3. number of repeated times: 50
 --- 7.23118710518 seconds ---
+
+
+
+### Architecture
+ ![alt text](https://github.com/shawntsai/insight-project/blob/master/Data%20Quality%20Diagram.png)
+ ![alt text](https://github.com/shawntsai/insight-project/blob/master/join.png)
+
