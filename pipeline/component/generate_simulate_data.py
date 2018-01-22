@@ -2,12 +2,12 @@ from pyspark import SparkConf, SparkContext
 from pyspark.sql import Row
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import monotonically_increasing_id 
+import config
+import time
 
-
-MASTER = 'spark://ip-10-0-0-14.us-west-2.compute.internal:7077'
-APP_NAME = 'app'
-
-
+MASTER = config.SERVER_CONFIG['master']
+APP_NAME = config.SERVER_CONFIG['app_name'] 
+spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
 
 import random
 k_l = [1, 5, 10, 20, 100]
@@ -49,12 +49,15 @@ def write_parquet(df, dest):
     #df.write.partitionBy("key").format("parquet").save(dest)
     df.write.parquet(dest)
     
-import time
+def data_toDF(data, schema, n_partition):
+    sc = spark.sparkContext
+    rdd = sc.parallelize(data, n_partition)
+    dataDF = spark.createDataFrame(rdd, schema=schema)
+    return dataDF
 
 def main(spark):
     sc = spark.sparkContext
     for repeated_times in repeated_times_l:
-	
         data = generate_table(n_rows, m_cols, repeated_times, random_max)
         rdd = sc.parallelize(data, n_partition)
         dataDF = spark.createDataFrame(rdd, schema=['key', 'a', 'b'])
@@ -80,11 +83,10 @@ def profile(df, attrs):
     
 
 
+
 if __name__ == "__main__":
         # Configure OPTIONS
-    spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
     main(spark)
-    
 
     #conf = SparkConf().setAppName(APP_NAME).setMaster(MASTER)
     #sc = SparkContext(conf=conf)

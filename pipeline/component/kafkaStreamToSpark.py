@@ -5,11 +5,12 @@ from pyspark.sql import SparkSession
 
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
+import config
 
 
-brokers = ['ec2-52-32-18-38.us-west-2.compute.amazonaws.com:9092']
-APP_NAME = 'stream_kafka'
-MASTER = 'spark://ip-10-0-0-14.us-west-2.compute.internal:7077'
+brokers = config.BROKER_CONFIG['brokers']
+APP_NAME = config.BROKER_CONFIG['app_name']
+MASTER = config.SERVER_CONFIG['master']
 
 def process(rdd):
     return rdd.collect()

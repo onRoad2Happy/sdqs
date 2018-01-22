@@ -1,7 +1,9 @@
 from kafka import KafkaProducer
 import json
+import config
 # producer = KafkaProducer(bootstrap_servers='localhost:9092')
-producer = KafkaProducer(bootstrap_servers='ec2-52-32-18-38.us-west-2.compute.amazonaws.com:9092')
+BOOTSTRAP_SERVERS = config.BOOTSTRAP_SERVERS
+producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS)
 
 def generate_test_json_table():
     data = list()

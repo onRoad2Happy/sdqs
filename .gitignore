@@ -1,0 +1,5 @@
+*.pyc
+lib/
+config.py
+.DS_Store
+
