@@ -1,7 +1,6 @@
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import Row
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import monotonically_increasing_id 
 import config
 import time
 
@@ -17,7 +16,7 @@ k_l = [1, 5, 10, 20, 100]
 data = list()
 n_rows = 1000000
 m_cols = 2
-n_partition = 3
+n_partition = 1
 
 rows = [10000, 100000, 10000000]
 repeated_times_l = [1, 10, 50]
@@ -71,18 +70,32 @@ def main(spark):
     #print 'size'
     #print getSize(dataDF)
 	start_time = time.time()
-        print 'number of repeated times: ' + str(repeated_times)
-    	print 'accuracy  ' + str(getAccuracy(dataDF, dataDF))
-	print("--- %s seconds ---" % (time.time() - start_time))
+        # print 'number of repeated times: ' + str(repeated_times)
+            # print 'accuracy  ' + str(getAccuracy(dataDF, dataDF))
+	# print("--- %s seconds ---" % (time.time() - start_time))
         profile(dataDF, ['key', 'a'])
-
+        print get_profile_dict(dataDF, ['key', 'a'])
 
 
 def profile(df, attrs):
     df.describe(attrs).show()
+
+# {'a': {0: u'1000050', 1: u'10.501937903104844', 2: u'5.764012905602232', 3: u'1', 4: u'20'}, 'key': {0: u'1000050', 1: u'10000.0', 2: u'5773.794246567651', 3: u'0', 4: u'20000'}, 'summary': {0: u'count', 1: u'mean', 2: u'stddev', 3: u'min', 4: u'max'}}{'a': {0: u'1000050', 1: u'10.501937903104844', 2: u'5.764012905602232', 3: u'1', 4: u'20'}, 'key': {0: u'1000050', 1: u'10000.0', 2: u'5773.794246567651', 3: u'0', 4: u'20000'}, 'summary': {0: u'count', 1: u'mean', 2: u'stddev', 3: u'min', 4: u'max'}}i
+
+def get_profile_dict(df, attrs):
+    data = df.describe(attrs).toPandas().to_dict()
+    for attr in data:
+        if attr != 'summary':
+            summary = data[attr]
+            summary['count'] = summary.pop(0)
+            summary['mean'] = summary.pop(1)
+            summary['stddev'] = summary.pop(2)
+            summary['min'] = summary.pop(3)
+            summary['max'] = summary.pop(4)
+    data.pop('summary')
+    return data
+
     
-
-
 
 if __name__ == "__main__":
         # Configure OPTIONS

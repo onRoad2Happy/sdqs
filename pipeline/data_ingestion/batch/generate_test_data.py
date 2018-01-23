@@ -1,7 +1,7 @@
 import happybase
 
 from utils.data import generate_table
-import host
+import config 
 
 batch_size = 1000
 host = config.hbase_host

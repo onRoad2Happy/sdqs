@@ -2,4 +2,6 @@
 lib/
 config.py
 .DS_Store
+spark-warehouse
+metastore_db
 
