@@ -10,6 +10,7 @@ import { TableListComponent } from './components/table-list/table-list.component
 import { DataService } from './services/data.service';
 import { NewTableComponent } from './components/new-table/new-table.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { TableDetailComponent } from './components/table-detail/table-detail.com
     AppComponent,
     TableListComponent,
     NewTableComponent,
-    TableDetailComponent
+    TableDetailComponent,
+    NavBarComponent
   ],
   imports: [
     BrowserModule,

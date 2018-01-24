@@ -3,3 +3,33 @@
     font-size: 1.2em;
   }
   
+  .type {
+    min-width: 65px;
+    margin-right: 10px;
+  }
+  
+  .label.type {
+    padding-top: 0.6em;
+    color: #fbfdfa;
+    font-size: 12px;
+  }
+  
+  .title {
+    font-size: 1.2em;
+  }
+  
+  .type-batch {
+    background-color: #42ebf4;
+  }
+  
+  .type-stream {
+    background-color: #92cf5c;
+  }
+  
+  .type-batch-accuracy {
+    background-color: #dd0d1e;
+  }
+  
+  .type-stream-accuracy {
+    background-color: #8d16e2;
+  }
