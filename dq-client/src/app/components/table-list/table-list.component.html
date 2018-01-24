@@ -1,0 +1,9 @@
+<div class="container">
+  <div class="list-group">
+      <a class="list-group-item" *ngFor="let table of tables"
+              [routerLink]="['/tables', table.id]">
+        <strong class="title">{{table.id}}. {{table.name}}</strong>
+      </a>
+    </div>
+</div>
+

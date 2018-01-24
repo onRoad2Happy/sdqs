@@ -1,0 +1,40 @@
+<div class = "container" *ngIf = "table">
+    <div class="col-xs-12 col-md-4">
+      <h2>
+        {{table.id}}. {{table.name}}
+      </h2>
+      <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Batch Profiling</div>
+      
+        <!-- Table -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>max</th>
+              <th>min</th>
+              <th>mean</th>
+              <th>count</th>
+              <th>stddev</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let attribute of table.attributes">
+            <tr>
+              <td>{{attribute.name}}</td>
+              <td>{{attribute.max}}</td>
+              <td>{{attribute.min}}</td>
+              <td>{{attribute.mean}}</td>
+              <td>{{attribute.count}}</td>
+              <td>{{attribute.stddev}}</td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+      
+    </div>
+    <div class="hidden-x col-sm-12 col-md-8">
+    </div>
+  </div>
+  
