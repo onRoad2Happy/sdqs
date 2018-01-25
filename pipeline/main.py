@@ -1,6 +1,6 @@
 from data_ingestion.batch.generate_test_data import get_data
 from component.generate_simulate_data import data_toDF
-from component.generate_simulate_data import getAccuracy 
+from component.generate_simulate_data import get_accuracy 
 from component.generate_simulate_data import get_attributes_summary 
 
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
             if job_type == 'accuracy':
                 source_data = get_data(source_table_name)
                 df_s = data_toDF(source_data, schema, 2)
-                accuracy = get_Accuracy(df_s, df)
+                accuracy = get_accuracy(df_s, df)
                 result['type'].append('accuracy')
                 result['source_id'] = job['source_id']
                 result['attributes'] = get_attributes_summary(df_s, schema)
