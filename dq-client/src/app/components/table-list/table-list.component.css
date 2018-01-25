@@ -26,10 +26,15 @@
     background-color: #92cf5c;
   }
   
-  .type-batch-accuracy {
+  .type-accuracy {
     background-color: #dd0d1e;
   }
+
+  .type-profile {
+    background-color: #c9e628;
+  }
   
-  .type-stream-accuracy {
+  
+  .type-anomaly {
     background-color: #8d16e2;
   }

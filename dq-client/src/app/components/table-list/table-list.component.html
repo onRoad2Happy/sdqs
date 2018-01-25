@@ -2,10 +2,13 @@
   <div class="list-group">
       <a class="list-group-item" *ngFor="let table of tables"
               [routerLink]="['/tables', table.id]">
-              <span class="{{'pull-left label type type-' + table.type.toLocaleLowerCase()}}" *ngIf="table.type">
-                {{table.type}}
-              </span>    
-        <strong class="title">{{table.id}}. {{table.name}}</strong>
+              <strong class="title">{{table.id}}. {{table.name}}</strong>
+              <span *ngFor="let type of table.type"> 
+                  <span class="{{'label type type-' + type.toLocaleLowerCase()}}">
+                    {{type}}
+                  </span> 
+                </span>              
+        
       </a>
     </div>
 </div>
