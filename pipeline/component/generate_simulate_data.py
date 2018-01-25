@@ -82,7 +82,7 @@ def profile(df, attrs):
 
 # {'a': {0: u'1000050', 1: u'10.501937903104844', 2: u'5.764012905602232', 3: u'1', 4: u'20'}, 'key': {0: u'1000050', 1: u'10000.0', 2: u'5773.794246567651', 3: u'0', 4: u'20000'}, 'summary': {0: u'count', 1: u'mean', 2: u'stddev', 3: u'min', 4: u'max'}}{'a': {0: u'1000050', 1: u'10.501937903104844', 2: u'5.764012905602232', 3: u'1', 4: u'20'}, 'key': {0: u'1000050', 1: u'10000.0', 2: u'5773.794246567651', 3: u'0', 4: u'20000'}, 'summary': {0: u'count', 1: u'mean', 2: u'stddev', 3: u'min', 4: u'max'}}i
 
-def get_profile_dict(df, attrs):
+def get_attributes_summary(df, attrs):
     data = df.describe(attrs).toPandas().to_dict()
     for attr in data:
         if attr != 'summary':
@@ -93,7 +93,13 @@ def get_profile_dict(df, attrs):
             summary['min'] = summary.pop(3)
             summary['max'] = summary.pop(4)
     data.pop('summary')
-    return data
+
+    attributes = list()
+    for attr in data:
+        data[attr]['name'] = attr 
+        attributes.append(data[attr])
+    return attributes
+
 
     
 
