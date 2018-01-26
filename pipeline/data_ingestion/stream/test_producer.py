@@ -18,11 +18,8 @@ def generate_test_json_table():
     return data
 
 
-
 while(True):
     for i in range(50000):
         # producer.send('test_topic', json.dumps({'a': 2, 'b': 3, 'c': 4}))
         producer.send('test_topic', str(i) + ',' + str(i+1) + ',' + str(i+2))
-
-
 

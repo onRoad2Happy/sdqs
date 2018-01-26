@@ -31,7 +31,7 @@ def connect_to_hbase():
     # batch.put(str(i), { "data:a": str(row[0]), "data:b": str(row[1]) })
 
 conn = connect_to_hbase()
-batch = table.batch(batch_size = batch_size)
+# batch = table.batch(batch_size = batch_size)
 
 
 def get_data(table_name):
