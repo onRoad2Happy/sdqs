@@ -38,7 +38,7 @@ def generate_table(n_rows, m_cols, repeated_times, random_max):
         x = x + 1
     return data
 
-def getAccuracy(realDF, targetDF):
+def get_accuracy(realDF, targetDF):
     return 1.0 - realDF.subtract(targetDF).count() * 1.0 / realDF.count()
    
 def getSize(df):

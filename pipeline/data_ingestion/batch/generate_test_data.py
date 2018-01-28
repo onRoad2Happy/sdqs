@@ -8,7 +8,7 @@ host = config.hbase_host
 namespace = "sample_data"
 row_count = 0
 table_name = "rfic"
-file_path = "Request_for_Information_Cases.csv"
+# file_path = "Request_for_Information_Cases.csv"
 
 
 def connect_to_hbase():
@@ -31,11 +31,11 @@ def connect_to_hbase():
     # batch.put(str(i), { "data:a": str(row[0]), "data:b": str(row[1]) })
 
 conn = connect_to_hbase()
-table = conn.table(table_name)
-batch = table.batch(batch_size = batch_size)
+# batch = table.batch(batch_size = batch_size)
 
 
-def get_data():
+def get_data(table_name):
+    table = conn.table(table_name)
     return [data for key, data in table.scan()]
 
 
