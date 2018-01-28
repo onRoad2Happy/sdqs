@@ -20,11 +20,19 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "../node_modules/bootstrap/dist/css/bootstrap.min.css"
+        "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/rickshaw/src/css/graph.css",
+        "../node_modules/rickshaw/src/css/legend.css",
+        "../node_modules/rickshaw/src/css/detail.css",
+        "../node_modules/rickshaw/examples/css/lines.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.js",
-        "../node_modules/bootstrap/dist/js/bootstrap.js"
+        "../node_modules/bootstrap/dist/js/bootstrap.js",
+        "../node_modules/socket.io-client/dist/socket.io.js",
+        "../node_modules/rickshaw/vendor/d3.min.js",
+        "../node_modules/rickshaw/vendor/d3.layout.min.js",
+        "../node_modules/rickshaw/rickshaw.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
