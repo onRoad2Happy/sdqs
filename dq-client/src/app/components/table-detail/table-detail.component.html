@@ -1,11 +1,13 @@
 <div class = "container" *ngIf="table">
   <div class="col-xs-12 col-md-4">
       <h2>
-        {{table.id}}. {{table.name}}
+        {{table.id}}. {{table.name}} {{table.stream_name}}
       </h2>
+
+        
       <div class="panel panel-default" *ngIf="table.attributes">
         <!-- Default panel contents -->
-        <div class="panel-heading" >{{table.name}}</div>
+        <div class="panel-heading" >{{table.name}} {{table.stream_name}}</div>
       
         <!-- Table -->
         <table class="table" >

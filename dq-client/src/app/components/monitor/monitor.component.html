@@ -1,11 +1,20 @@
 <p>got something</p>
-<div id="chart_container">
-  <div id="chart"></div>
-	<div id="legend_container">
-      <div id="smoother" title="Smoothing"></div>
-      <div id="legend"></div>
-    </div>  
-    <div id="slider"></div>
-  
 
-</div>
+<div class="btn-group">
+    <button class="btn dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
+    <ul class="dropdown-menu" >                
+      <li  *ngFor="let attr of stream_attributes"(click)="onSelect(attr)">{{attr}}</li>            
+    </ul>
+    <p> Selected value: {{selectedValue}} </p>
+      
+</div><!-- /btn-group -->
+    
+
+    <div id="chart_container">
+        <div id="chart"></div>
+        <div id="legend_container">
+            <div id="smoother" title="Smoothing"></div>
+            <div id="legend"></div>
+          </div>  
+          <div id="slider"></div>
+      </div>

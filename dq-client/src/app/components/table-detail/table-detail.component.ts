@@ -9,6 +9,9 @@ import { Table } from '../../data-structure/table';
 })
 export class TableDetailComponent implements OnInit {
   table: Table;
+  stream_attributes = ["attr", "attr2", "attr3"]
+  selectedValue: string;
+ 
   constructor(
     private route: ActivatedRoute,
     @Inject('data') private data
@@ -20,6 +23,8 @@ export class TableDetailComponent implements OnInit {
       this.data.getTable(+params['id'])
       .then(table => this.table = table);
     });
+
+
   } 
 
 }
