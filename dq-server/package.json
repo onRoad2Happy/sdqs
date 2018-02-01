@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.2",
-    "rethinkdb": "^2.3.3"
+    "rethinkdb": "^2.3.3",
+    "socket.io": "^2.0.4"
   }
 }

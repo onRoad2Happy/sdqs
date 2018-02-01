@@ -18,13 +18,13 @@ app.use(function(req, res) {
 // app.listen(3000, () => console.log('Example app listening on port 3000!'));
 
 const http = require('http');
-// const socketIO = require('socket.io');
-// const io = socketIO(http);
-
-// const editorSocketService = require('./services/editorSocketService.js')(io);
+const socketIO = require('socket.io');
+const io = socketIO(http);
+const monitorSocketService = require('./services/monitorService.js')(io);
 
 const server = http.createServer(app);
-// io.attach(server);
+io.attach(server);
+
 server.listen(3000);
 server.on('error', onError);
 server.on('listening', onListening);

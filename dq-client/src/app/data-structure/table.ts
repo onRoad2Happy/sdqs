@@ -8,4 +8,5 @@ export class Table {
     source_id: number;
     source_name: string;
     source_attributes: Attribute[];
+    stream_name: string;
 }

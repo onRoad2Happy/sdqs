@@ -2,7 +2,7 @@
   <div class="list-group">
       <a class="list-group-item" *ngFor="let table of tables"
               [routerLink]="['/tables', table.id]">
-              <strong class="title">{{table.id}}. {{table.name}}</strong>
+              <strong class="title">{{table.id}}. {{table.name}} {{table.stream_name}}</strong>
               <span *ngFor="let type of table.type"> 
                   <span class="{{'label type type-' + type.toLocaleLowerCase()}}">
                     {{type}}

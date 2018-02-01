@@ -11,6 +11,8 @@ import { DataService } from './services/data.service';
 import { NewTableComponent } from './components/new-table/new-table.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { MonitorComponent } from './components/monitor/monitor.component';
+import { StreamDataService } from './services/stream-data.service';
 
 
 @NgModule({
@@ -19,7 +21,8 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
     TableListComponent,
     NewTableComponent,
     TableDetailComponent,
-    NavBarComponent
+    NavBarComponent,
+    MonitorComponent
   ],
   imports: [
     BrowserModule,
@@ -31,6 +34,10 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
     {
       provide: 'data',
       useClass: DataService
+    },
+    {
+      provide: 'stream-data',
+      useClass: StreamDataService
     }
   ],
   bootstrap: [AppComponent]

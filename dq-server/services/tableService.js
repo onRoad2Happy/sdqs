@@ -49,7 +49,7 @@
 const r = require('rethinkdb');
 
 const rethinkdb = {
-    host: 'localhost',
+    host: '34.209.184.21',
     port: 28015,
     authKey: '',
     db: 'test'

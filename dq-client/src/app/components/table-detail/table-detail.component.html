@@ -1,14 +1,16 @@
-<div class = "container" *ngIf = "table">
-    <div class="col-xs-12 col-md-4">
+<div class = "container" *ngIf="table">
+  <div class="col-xs-12 col-md-4">
       <h2>
-        {{table.id}}. {{table.name}}
+        {{table.id}}. {{table.name}} {{table.stream_name}}
       </h2>
-      <div class="panel panel-default">
+
+        
+      <div class="panel panel-default" *ngIf="table.attributes">
         <!-- Default panel contents -->
-        <div class="panel-heading" >{{table.name}}</div>
+        <div class="panel-heading" >{{table.name}} {{table.stream_name}}</div>
       
         <!-- Table -->
-        <table class="table">
+        <table class="table" >
           <thead>
             <tr>
               <th>#</th>
@@ -63,8 +65,10 @@
       </div>
       <p *ngIf="table.accuracy">Accuracy: {{table.accuracy}}</p>
 
+  </div>  
+    <div class="hidden-x col-sm-10 col-md-8" *ngIf="table.stream_name">
+        <app-monitor></app-monitor>
     </div>
-    <div class="hidden-x col-sm-12 col-md-8">
-    </div>
-  </div>
+
+</div>
   
