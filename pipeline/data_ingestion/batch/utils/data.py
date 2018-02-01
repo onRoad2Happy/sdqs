@@ -1,5 +1,6 @@
+
+import random
 def generate_table(n_rows, m_cols, repeated_times, random_max):
-    import random
     data = list()
     x = 0
     while x * repeated_times <= n_rows:

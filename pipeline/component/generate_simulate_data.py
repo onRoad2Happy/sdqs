@@ -25,6 +25,10 @@ x = 0
 repeated_times = 3
 random_max = 20
 
+def hdfs_toDF(path):
+    df = spark.read.option("header","true").csv(path) 
+    return df
+
 def generate_table(n_rows, m_cols, repeated_times, random_max):
     data = list()
     x = 0
@@ -53,6 +57,13 @@ def data_toDF(data, schema, n_partition):
     rdd = sc.parallelize(data, n_partition)
     dataDF = spark.createDataFrame(rdd, schema=schema)
     return dataDF
+
+def table_toDF(table, schema, n_partition):
+    sc = spark.sparkContext
+    rdd = sc.parallelize([data for key, data in table.scan()], n_partition)
+    dataDF = spark.createDataFrame(rdd, schema=schema)
+    return dataDF
+
 
 def main(spark):
     sc = spark.sparkContext
@@ -99,6 +110,20 @@ def get_attributes_summary(df, attrs):
         data[attr]['name'] = attr 
         attributes.append(data[attr])
     return attributes
+
+
+def get_attributes(df, attrs):
+    data = df.describe(attrs).toPandas().to_dict()
+    for attr in data:
+        if attr != 'summary':
+            summary = data[attr]
+            summary['count'] = summary.pop(0)
+            summary['mean'] = summary.pop(1)
+            summary['stddev'] = summary.pop(2)
+            summary['min'] = summary.pop(3)
+            summary['max'] = summary.pop(4)
+    data.pop('summary')
+    return data
 
 
     
