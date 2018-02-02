@@ -15,7 +15,6 @@ export class TableListComponent implements OnInit {
   }
 
   getTables(): void {
-    // this.tables = this.dataService.getTables();
     this.dataService.getTables()
     .subscribe(tables => this.tables = tables);
     

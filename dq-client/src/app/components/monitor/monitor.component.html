@@ -1,11 +1,9 @@
-<p>got something</p>
 
 <div class="btn-group">
-    <button class="btn dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
+    <button class="btn dropdown-toggle" data-toggle="dropdown">Attributes <span class="caret"></span></button>
     <ul class="dropdown-menu" >                
       <li  *ngFor="let attr of stream_attributes"(click)="onSelect(attr)">{{attr}}</li>            
     </ul>
-    <p> Selected value: {{selectedValue}} </p>
       
 </div><!-- /btn-group -->
     

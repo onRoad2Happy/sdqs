@@ -3,7 +3,7 @@ import { NullAstVisitor } from '@angular/compiler';
 
 declare const Rickshaw: any;
 declare const io: any;
-
+declare const moment: any;
 @Component({
   selector: 'app-monitor',
   templateUrl: './monitor.component.html',
@@ -14,38 +14,41 @@ declare const io: any;
 
 export class MonitorComponent implements OnInit {
 
-  stream_attributes = ["rickshaw", "a", "b"]
+  stream_attributes = ["a", "b", "c"]
   graph: any;
   constructor(@Inject('stream-data') private streamData) { }
-  socket: any;
-  selectedValue: string;
+  selectedValue = this.stream_attributes[0];
   socketioGraph: any;
-
-  ngOnInit() {
-    this.createGraph(this.stream_attributes[0]);
-
+  socket: any;
+  ngOnInit() {    
+    this.createGraph();  
   }
 
-  createGraph(attr: string) {
-
+  createGraph() {
+    // var socket = io();
+    this.socket = io();
+    var socket = this.socket;
+    socket.emit('getData', this.selectedValue);
+    var attr = this.selectedValue;
     Rickshaw.Graph.Socketio.Static = Rickshaw.Class.create( Rickshaw.Graph.Socketio, { 
       request: function() {
-        const thisData = this;
-        io().on('rickshaw', function (data) {
+        const thisData = this;    
+        socket.on(attr, function (data) {
           console.log("Got some fancy Websocket data: ");
+          console.log(attr);
           console.log(data);
           thisData.success(data);
-        });
+        });        
       }
     } );
-
     this.socketioGraph = new Rickshaw.Graph.Socketio.Static( {
       element: document.getElementById("chart"),
       width: 600,
       height: 400,
       renderer: 'line',
       // dataURL: "http://localhost",
-
+       
+    
 
       onData: function(d) {
         Rickshaw.Series.zeroFill(d); 
@@ -53,7 +56,8 @@ export class MonitorComponent implements OnInit {
       },
 
       onComplete: function(transport) {        
-          
+        var tv = 250;
+
         var time = new Rickshaw.Fixtures.Time();
         var seconds = time.unit('second');    
         if (!this.yAxis) {
@@ -65,11 +69,29 @@ export class MonitorComponent implements OnInit {
         
         if (!this.xAxis) {
 
-          var xAxis = new Rickshaw.Graph.Axis.Time( {
+          var unit = {}
+
+          unit['formatTime'] = function(d) {
+            // return d.toUTCString().match(/(\d+:\d+):/)[1];
+            return moment(d).format("HH:mm:ss");
+            // return d;
+          };
+          unit['formatter'] = function(d) { return this.formatTime(d)};
+          unit['name'] = "15 second";
+          unit['seconds'] = 15;
+          var xAxis = new Rickshaw.Graph.Axis.Time({
             graph: transport.graph,
+            timeUnit:unit,
             ticksTreatment: 'glow',
             timeFixture: new Rickshaw.Fixtures.Time.Local()
-          } );         
+          });
+          
+          
+          // var xAxis = new Rickshaw.Graph.Axis.Time( {
+          //   graph: transport.graph,
+          //   ticksTreatment: 'glow',
+          //   timeFixture: new Rickshaw.Fixtures.Time.Local()
+          // } );         
         }
         
 
@@ -113,33 +135,32 @@ export class MonitorComponent implements OnInit {
       } 
 
     } );
+
+
+    
+        
+    socket.on('disconnected', function(){      
+      socket.emit('disConnect');
+      socket.disconnect();
+    })
+
+    
   }
 
 
-  onSelect(attr: string): void {
-    this.selectedValue = attr;
-    Rickshaw.Graph.Socketio.Static = Rickshaw.Class.create( Rickshaw.Graph.Socketio, { 
-      request: function() {
-        const thisData = this;
-        io().on(this.selectedValue, function (data) {
-          console.log("Got some fancy Websocket data: ");
-          console.log(data);
-          thisData.success(data);
-        });
-      }
-    } );
-    this.socketioGraph = new Rickshaw.Graph.Socketio.Static( {
-      element: document.getElementById("chart"),
-      width: 600,
-      height: 400,
-      renderer: 'line',
-      // dataURL: "http://localhost",
+  onSelect(attr: string): void {    
+    // this mean new clinet
+    this.clearGraph();
+    this.socket.emit('disconnect');
+    this.socket.disconnect();
+    this.selectedValue = attr;    
+    this.createGraph();    
+  }
 
-      onData: function(d) {
-        Rickshaw.Series.zeroFill(d); 
-        return d;
-      }
-    });
+  clearGraph() {
+    document.getElementById('legend').remove();
+    document.getElementById('chart').remove();
+    document.getElementById("chart_container").insertAdjacentHTML('beforeend', '<div id="chart"></div><div id="legend_container"><div id="smoother" title="Smoothing"></div><div id="legend"></div></div>  <div id="slider"></div>')
   }
 
 }

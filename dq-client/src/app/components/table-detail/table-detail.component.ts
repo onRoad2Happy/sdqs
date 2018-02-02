@@ -9,7 +9,6 @@ import { Table } from '../../data-structure/table';
 })
 export class TableDetailComponent implements OnInit {
   table: Table;
-  stream_attributes = ["attr", "attr2", "attr3"]
   selectedValue: string;
  
   constructor(
@@ -26,5 +25,9 @@ export class TableDetailComponent implements OnInit {
 
 
   } 
+
+  formatNumber(i) {
+    return Math.round(i * 100)/100; 
+  }
 
 }

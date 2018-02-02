@@ -1,19 +1,21 @@
 <div class = "container" *ngIf="table">
-  <div class="col-xs-12 col-md-4">
+  <div class="col-xs-12 col-md-6">
       <h2>
         {{table.id}}. {{table.name}} {{table.stream_name}}
       </h2>
 
-        
-      <div class="panel panel-default" *ngIf="table.attributes">
+
+      <div class="panel panel-default" *ngIf="table.name">
         <!-- Default panel contents -->
-        <div class="panel-heading" >{{table.name}} {{table.stream_name}}</div>
+        <div class="panel-heading" >target table: {{table.name}} {{table.stream_name}}</div>
       
+        <div class="table-responsive">
+
         <!-- Table -->
-        <table class="table" >
+        <table class="table table-hover table-responsive" >
           <thead>
             <tr>
-              <th>#</th>
+              <th>Attribute</th>
               <th>max</th>
               <th>min</th>
               <th>mean</th>
@@ -21,27 +23,28 @@
               <th>stddev</th>
             </tr>
           </thead>
-          <tbody *ngFor="let attribute of table.attributes">
+          <tbody *ngFor="let attribute of table.summary">
             <tr>
               <td>{{attribute.name}}</td>
               <td>{{attribute.max}}</td>
               <td>{{attribute.min}}</td>
-              <td>{{attribute.mean}}</td>
+              <td>{{formatNumber(attribute.mean)}}</td>
               <td>{{attribute.count}}</td>
-              <td>{{attribute.stddev}}</td>
+              <td>{{formatNumber(attribute.stddev)}}</td>
             </tr>
           </tbody>
 
         </table>
-        
+        </div>
 
         <div class="panel-heading" *ngIf="table.source_name" >source table : {{table.source_name}}</div>
-      
+        <div class="table-responsive">
+
         <!-- Table -->
-        <table class="table" *ngIf="table.source_name">
+        <table class="table table-hover" *ngIf="table.source_name">
           <thead>
             <tr>
-              <th>#</th>
+              <th>Attribute</th>
               <th>max</th>
               <th>min</th>
               <th>mean</th>
@@ -49,23 +52,24 @@
               <th>stddev</th>
             </tr>
           </thead>
-          <tbody *ngFor="let attribute of table.source_attributes">
+          <tbody *ngFor="let attribute of table.source_summary">
             <tr>
               <td>{{attribute.name}}</td>
               <td>{{attribute.max}}</td>
               <td>{{attribute.min}}</td>
-              <td>{{attribute.mean}}</td>
+              <td>{{formatNumber(attribute.mean)}}</td>
               <td>{{attribute.count}}</td>
-              <td>{{attribute.stddev}}</td>
+              <td>{{formatNumber(attribute.stddev)}}</td>
             </tr>
           </tbody>
 
         </table>
-
+        </div>
       </div>
       <p *ngIf="table.accuracy">Accuracy: {{table.accuracy}}</p>
 
   </div>  
+
     <div class="hidden-x col-sm-10 col-md-8" *ngIf="table.stream_name">
         <app-monitor></app-monitor>
     </div>

@@ -8,9 +8,9 @@ const rethinkdb = {
     db: 'test'
 }
 
+
 module.exports = function(io) {
     io.on('connection', (socket)=> {    
-        
         // incr = 0;
         // var sendData = function() {
         //     data = [
@@ -35,75 +35,85 @@ module.exports = function(io) {
         //   socket.on('disconnect', function() {
         //     clearInterval(run);
         // });
-    
 
 
-        r.connect(rethinkdb, function(err, conn) {
-            if (err) throw err;
-            connection = conn;
-            return r.table('test_new_stream').changes()("new_val")
-            .run(connection, function (err, cursor){
-                result = [
-                    {
-                        "color": "#ff8df5",
-                        "name": 'count',
-                        "data": []
-                    },
-                    {
-                        "color": "#fdd4ed",
-                        "name": 'max',
-                        "data": []
-                    },
-                    {
-                        "color": "#ffe38d",
-                        "name": 'min',
-                        "data": []
-                    },
-                    {
-                        "color": "#ffeea5",
-                        "name": 'stddev',
-                        "data": []
-                    },
-                    {
-                        "color": "#ffd381",
-                        "name": 'mean',
-                        "data": []
-                    },        
-                ]
-                cursor.each(function(err, data) {                    
-                    if (err) reject(err);
-                    else {
-                        var time = data['time'];
-                        var attribute = data['attribute'];
-                        attribute.forEach(element => {
-                            if (element['name'] === 'a') {
-                                const now = (new Date).getTime() / 1000;
+        socket.on('getData', function(key) {
+            result = [
+                {
+                    "color": "#ff8df5",
+                    "name": 'count',
+                    "data": []
+                },
+                {
+                    "color": "#fdd4ed",
+                    "name": 'max',
+                    "data": []
+                },
+                {
+                    "color": "#ffe38d",
+                    "name": 'min',
+                    "data": []
+                },
+                {
+                    "color": "#ffeea5",
+                    "name": 'stddev',
+                    "data": []
+                },
+                {
+                    "color": "#ffd381",
+                    "name": 'mean',
+                    "data": []
+                },        
+            ]
+            r.connect(rethinkdb, function(err, conn) {
+                if (err) throw err;
+                connection = conn;
+                r.table('test_topic').changes()("new_val")
+                .run(connection, function (err, cursor){
+                    cursor.each(function(err, data) {                    
+                        if (err) throw err;
+                        else {
+                            var time = data['time'];
+                            const now = (new Date).getTime() / 1000;
+                                var element = data['summary'][key];
                                 result[0]["data"].push({'x': now, 'y': + element['count']});
                                 result[1]["data"].push({'x': now, 'y': + element['max']});
                                 result[2]["data"].push({'x': now, 'y': + element['min']});
                                 result[3]["data"].push({'x': now, 'y': + element['stddev']});
                                 result[4]["data"].push({'x': now, 'y': + element['mean']});                            
+                                if (result[0]["data"].length > 20) {
+                                    result[0]["data"].shift();
+                                    result[1]["data"].shift();
+                                    result[2]["data"].shift();
+                                    result[3]["data"].shift();
+                                    result[4]["data"].shift();                        
+                                }   
+                                console.log(key);
+                                console.log(result[0]["data"].length);
+                                // console.log(result);
+                                socket.emit(key, result);                                                                                
+                        }                    
+                    });
+
+                    socket.on('disconnect', function() {
+                        cursor.close(function(err) {
+                            if (err) {
+                                console.log("An error occurred on cursor close");
                             }
-                        });
-                        console.log(result[0]["data"].length);
-                        console.log(result[0]["data"]);
-                        if (result[0]["data"].length > 100) {
-                            result[0]["data"].shift();
-                            result[1]["data"].shift();
-                            result[2]["data"].shift();
-                            result[3]["data"].shift();
-                            result[4]["data"].shift();                        
-                        }   
-                        socket.emit('rickshaw', result);    
-                        socket.emit('a', result);    
-                        
-                    }                    
-                });
+                        })
+                        conn.close();
+                    })
+                    
+                }).catch(function(error) {                
+                    console.log('An error occur', error);
+                    return Promise.reject(error);})
+
                 
             }).catch(function(error) {                
                 console.log('An error occur', error);
                 return Promise.reject(error);})
         })
+
     })
 
 

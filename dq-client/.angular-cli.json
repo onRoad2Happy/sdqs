@@ -32,7 +32,13 @@
         "../node_modules/socket.io-client/dist/socket.io.js",
         "../node_modules/rickshaw/vendor/d3.min.js",
         "../node_modules/rickshaw/vendor/d3.layout.min.js",
-        "../node_modules/rickshaw/rickshaw.min.js"
+        "../node_modules/rickshaw/rickshaw.js",
+        "../node_modules/rickshaw/src/js/Rickshaw.Graph.Renderer.js",
+        "../node_modules/rickshaw/src/js/Rickshaw.Graph.Renderer.Line.js",
+        "../node_modules/rickshaw/src/js/Rickshaw.Graph.Socketio.js",
+        "../node_modules/rickshaw/src/js/Rickshaw.Graph.Ajax.js",
+        "../node_modules/rickshaw/src/js/Rickshaw.Graph.Axis.Time.js",
+        "../node_modules/moment/moment.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

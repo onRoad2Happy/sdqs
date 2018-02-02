@@ -72,7 +72,7 @@ const getTables = function() {
     // })
 
     return new Promise((resolve, reject) => {
-        r.table('test_table').run(connection, function(err, cursor) {
+        r.table('test_table').orderBy('id').run(connection, function(err, cursor) {
             if (err) {
                 reject(err);
             } else {
