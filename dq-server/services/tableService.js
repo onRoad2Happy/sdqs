@@ -1,4 +1,5 @@
 
+
 // let tables = [
 //   {
 //       id: 1,
@@ -48,13 +49,8 @@
 
 const r = require('rethinkdb');
 
-const rethinkdb = {
-    host: '34.209.184.21',
-    port: 28015,
-    authKey: '',
-    db: 'test'
-}
 
+const rethinkdb = require('./config');
 
 
 var connection = null;

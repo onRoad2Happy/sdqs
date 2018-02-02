@@ -25,11 +25,18 @@ export class MonitorComponent implements OnInit {
   }
 
   createGraph() {
-    // var socket = io();
+    // this.socket = io(window.location.origin, {query: 'attributeId=' + this.selectedValue});
     this.socket = io();
+
     var socket = this.socket;
+    // socket.on('connect', function() {
+    // socket.emit('room', this.stream_attributes[0]);
+    // })
+    
     socket.emit('getData', this.selectedValue);
+
     var attr = this.selectedValue;
+
     Rickshaw.Graph.Socketio.Static = Rickshaw.Class.create( Rickshaw.Graph.Socketio, { 
       request: function() {
         const thisData = this;    

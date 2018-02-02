@@ -1,13 +1,33 @@
-
 const r = require('rethinkdb');
 
-const rethinkdb = {
-    host: '34.209.184.21',
-    port: 28015,
-    authKey: '',
-    db: 'test'
-}
-
+const rethinkdb = require('./config');
+// result = [
+//     {
+//         "color": "#ff8df5",
+//         "name": 'count',
+//         "data": []
+//     },
+//     {
+//         "color": "#fdd4ed",
+//         "name": 'max',
+//         "data": []
+//     },
+//     {
+//         "color": "#ffe38d",
+//         "name": 'min',
+//         "data": []
+//     },
+//     {
+//         "color": "#ffeea5",
+//         "name": 'stddev',
+//         "data": []
+//     },
+//     {
+//         "color": "#ffd381",
+//         "name": 'mean',
+//         "data": []
+//     },        
+// ]
 
 module.exports = function(io) {
     io.on('connection', (socket)=> {    
@@ -35,36 +55,41 @@ module.exports = function(io) {
         //   socket.on('disconnect', function() {
         //     clearInterval(run);
         // });
+        // const attr = socket.handshake.query['attributeId'];
+        result = [
+            {
+                "color": "#ff8df5",
+                "name": 'count',
+                "data": []
+            },
+            {
+                "color": "#fdd4ed",
+                "name": 'max',
+                "data": []
+            },
+            {
+                "color": "#ffe38d",
+                "name": 'min',
+                "data": []
+            },
+            {
+                "color": "#ffeea5",
+                "name": 'stddev',
+                "data": []
+            },
+            {
+                "color": "#ffd381",
+                "name": 'mean',
+                "data": []
+            },        
+        ]
+        // socket.on('room', function(room) {
+        //     console.log('join room' + room);
+        //     socket.join(room);
+        // })
 
-
-        socket.on('getData', function(key) {
-            result = [
-                {
-                    "color": "#ff8df5",
-                    "name": 'count',
-                    "data": []
-                },
-                {
-                    "color": "#fdd4ed",
-                    "name": 'max',
-                    "data": []
-                },
-                {
-                    "color": "#ffe38d",
-                    "name": 'min',
-                    "data": []
-                },
-                {
-                    "color": "#ffeea5",
-                    "name": 'stddev',
-                    "data": []
-                },
-                {
-                    "color": "#ffd381",
-                    "name": 'mean',
-                    "data": []
-                },        
-            ]
+        socket.on('getData', function(key) {            
+            
             r.connect(rethinkdb, function(err, conn) {
                 if (err) throw err;
                 connection = conn;
@@ -91,12 +116,15 @@ module.exports = function(io) {
                                 console.log(key);
                                 console.log(result[0]["data"].length);
                                 // console.log(result);
-                                socket.emit(key, result);                                                                                
+                                // io.in(key).emit(key, result);
+                                io.emit(key, result);
+                                // socket.in(key).emit(key, result);                                                                                
+                                // io.sockets.in(key).emit(key, result);
                         }                    
                     });
 
                     socket.on('disconnect', function() {
-                        cursor.close(function(err) {
+                        cursor.close(function(err) {                            
                             if (err) {
                                 console.log("An error occurred on cursor close");
                             }
