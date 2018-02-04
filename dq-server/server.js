@@ -19,12 +19,16 @@ app.use(function(req, res) {
 
 const http = require('http');
 const socketIO = require('socket.io');
+
+const redis = require('socket.io-redis');
+
 const io = socketIO(http);
+
 const monitorSocketService = require('./services/monitorService.js')(io);
 
 const server = http.createServer(app);
 io.attach(server);
-
+io.adapter(redis({host:'localhost', port:6379}))
 server.listen(3000);
 server.on('error', onError);
 server.on('listening', onListening);

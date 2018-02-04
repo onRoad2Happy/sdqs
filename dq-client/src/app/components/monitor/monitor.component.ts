@@ -24,16 +24,16 @@ export class MonitorComponent implements OnInit {
     this.createGraph();  
   }
 
-  createGraph() {
-    // this.socket = io(window.location.origin, {query: 'attributeId=' + this.selectedValue});
+  createGraph() {    
     this.socket = io();
 
     var socket = this.socket;
-    // socket.on('connect', function() {
-    // socket.emit('room', this.stream_attributes[0]);
-    // })
+    var select_attr = this.selectedValue;
+    socket.emit('join', select_attr);
     
-    socket.emit('getData', this.selectedValue);
+    socket.on('create_room', function(){
+      socket.emit('getData', select_attr);
+    })
 
     var attr = this.selectedValue;
 
@@ -41,9 +41,9 @@ export class MonitorComponent implements OnInit {
       request: function() {
         const thisData = this;    
         socket.on(attr, function (data) {
-          console.log("Got some fancy Websocket data: ");
-          console.log(attr);
-          console.log(data);
+          // console.log("Got some fancy Websocket data: ");
+          // console.log(attr);
+          // console.log(data);
           thisData.success(data);
         });        
       }
@@ -78,10 +78,8 @@ export class MonitorComponent implements OnInit {
 
           var unit = {}
 
-          unit['formatTime'] = function(d) {
-            // return d.toUTCString().match(/(\d+:\d+):/)[1];
-            return moment(d).format("HH:mm:ss");
-            // return d;
+          unit['formatTime'] = function(d) {      
+            return moment(d).format("HH:mm:ss");      
           };
           unit['formatter'] = function(d) { return this.formatTime(d)};
           unit['name'] = "15 second";
@@ -93,12 +91,7 @@ export class MonitorComponent implements OnInit {
             timeFixture: new Rickshaw.Fixtures.Time.Local()
           });
           
-          
-          // var xAxis = new Rickshaw.Graph.Axis.Time( {
-          //   graph: transport.graph,
-          //   ticksTreatment: 'glow',
-          //   timeFixture: new Rickshaw.Fixtures.Time.Local()
-          // } );         
+      
         }
         
 
