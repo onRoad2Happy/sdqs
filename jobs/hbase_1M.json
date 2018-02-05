@@ -1,0 +1,8 @@
+{
+    "target_table": "test_table_1000000", 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "attributes": ["key", "a", "b", "c", "d"], 
+    "format":"hbase"
+}
+

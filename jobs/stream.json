@@ -1,0 +1,8 @@
+{
+    "target_table": "test_topic", 
+    "target_id": 1, 
+    "jobs": ["profile"],
+    "data_type": "stream", 
+    "attributes": ["a", "b", "c"]
+}
+

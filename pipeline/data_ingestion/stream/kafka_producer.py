@@ -1,7 +1,13 @@
-from kafka import KafkaProducer
 import json
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import config
-# producer = KafkaProducer(bootstrap_servers='localhost:9092')
+
+from kafka import KafkaProducer
+
+
+
 BOOTSTRAP_SERVERS = config.BOOTSTRAP_SERVERS
 producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS)
 
@@ -17,9 +23,14 @@ def generate_test_json_table():
         x = x + 1
     return data
 
+def main():
+    while(True):
+        for i in range(50000):
+            # producer.send('test_topic', json.dumps({'a': 2, 'b': 3, 'c': 4}))
+            producer.send('test_topic', str(i) + ',' + str(i+1) + ',' + str(i+2))
 
-while(True):
-    for i in range(50000):
-        # producer.send('test_topic', json.dumps({'a': 2, 'b': 3, 'c': 4}))
-        producer.send('test_topic', str(i) + ',' + str(i+1) + ',' + str(i+2))
 
+
+
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,7 @@
 *.pyc
 lib/
-config.py
+*config.py
+config_.py
 .DS_Store
 spark-warehouse
 metastore_db

@@ -1,0 +1,8 @@
+{
+    "target_table": "test_csv_100M.csv", 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "attributes": ["key", "a", "b", "c", "d"] , 
+    "format": "hdfs"
+}
+

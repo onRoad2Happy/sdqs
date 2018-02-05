@@ -1,0 +1,10 @@
+{
+    "target_table": "rfic", 
+    "jobs": ["profile", "accuracy"],
+    "data_type": "batch", 
+    "attributes": ["a", "b"], 
+    "source_table": "rfic", 
+    "source_id": 4, 
+    "format":"hbase"
+}
+
