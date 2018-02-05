@@ -11,7 +11,7 @@ import config
 batch_size = 1000
 
 host = config.HBASE_HOST
-namespace = cofig.NAMESPACE 
+namespace = config.NAMESPACE 
 
 def get_data(table_name):
     conn = connect_to_hbase()

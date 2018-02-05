@@ -8,8 +8,8 @@ import json
 import sys
 import rethinkdb as r
 
-from batch_process import get_attributes_summary
-from batch_process import get_attributes
+from generate_simulate_data import get_attributes_summary
+from generate_simulate_data import get_attributes
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
@@ -38,7 +38,7 @@ def streaming(now, rdd, topic, re_table, conn, attributes):
     try:
         tic = time.clock()
         rdd.cache()
-        print "=========%s========" % str(now)
+	# print "=========%s========" % str(now)
 	spark = getSparkSessionInstance(rdd.context.getConf())
 	# rowRdd = rdd.map(lambda w: json.loads(w))
         result = dict()
@@ -64,7 +64,6 @@ def show_message_size_flow(kvs):
 
 def store_toDB(time_summary, result, reTable):
     result['time'] = time_summary[0]
-
     result['attributes'] = time_summary[1]
     reTable.insert(result)
 
@@ -72,8 +71,6 @@ def streaming_profile_toDB(topic, re_table, conn, attributes):
     sc = spark.sparkContext
     ssc = StreamingContext(sc, 5)
     numThread = 3
-    print zkQuorum
-    print topic
     kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic: numThread})
     kvs.foreachRDD(lambda t, rdd: streaming(t, rdd, topic, re_table, conn, attributes))
     ssc.start()
