@@ -99,18 +99,25 @@ def get_attributes(df, attrs):
 
 
 def toCSVLine(data):
-    return ','.join(str(d) for d in data)
+    # return ','.join(str(int(d* 10)) for d in data)
+    return ','.join(str(d)for d in data)
 
-def generate_csv_hdfs(spark, row, col, path):
+def generate_csv_hdfs(spark, row, col, path, num_partition=3):
     sc = spark.sparkContext
-    rdd = RandomRDDs.uniformVectorRDD(sc, row, col)
+    rdd = RandomRDDs.uniformVectorRDD(sc, row, col, num_partition)
     lines = rdd.map(toCSVLine)
     lines.saveAsTextFile(path)
 
 def main(spark):
     path = "hdfs://ip-10-0-0-9.us-west-2.compute.internal:9000/user/data/"
-    file_name = 'test_csv_6G.csv'
-    generate_csv_hdfs(spark, 6000000000L, 5,  path + file_name)
+    # file_name = 'test_csv_6G.csv'
+    # generate_csv_hdfs(spark, 6000000000L, 5,  path + file_name)
+    file_name = 'test_csv_1.4G.csv'
+    generate_csv_hdfs(spark, 1400000000, 5,  path + file_name)
+
+
+    # df = hdfs_toDF(path + file_name, False,  ['a', 'b', 'c', 'd', 'e'])
+    # df.show()
 
 if __name__ == "__main__":
     main(spark)

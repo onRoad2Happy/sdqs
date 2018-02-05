@@ -8,8 +8,8 @@ import json
 import sys
 import rethinkdb as r
 
-from generate_simulate_data import get_attributes_summary
-from generate_simulate_data import get_attributes
+from batch_process import get_attributes_summary
+from batch_process import get_attributes
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
