@@ -1,33 +1,31 @@
+import time
+import random
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import config
+
+
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import Row
 from pyspark.sql import SparkSession
-import config
-import time
+from pyspark.sql.types import LongType, StringType, StructField, StructType, BooleanType, ArrayType, IntegerType
+from pyspark.mllib.random import RandomRDDs
 
 MASTER = config.SERVER_CONFIG['master']
 APP_NAME = config.SERVER_CONFIG['app_name'] 
 spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
 
-import random
-k_l = [1, 5, 10, 20, 100]
-# when k is 1 the feild is distinct
-# when k is bigger it means data has more repeated keys 
 
-data = list()
-n_rows = 1000000
-m_cols = 2
-n_partition = 1
+def hdfs_toDF(path, has_header=True, attributes=None):
+    schema = None
+    if attributes:
+        schema = StructType([StructField(key, StringType(), True) for key in attributes])
 
-rows = [10000, 100000, 10000000]
-repeated_times_l = [1, 10, 50]
+    if has_header:
+        return spark.read.option("header","true").option("inferSchema", "true").csv(path) 
+    else:
+        return spark.read.option("header", "false").schema(schema).csv(path) 
 
-x = 0
-repeated_times = 3
-random_max = 20
-
-def hdfs_toDF(path):
-    df = spark.read.option("header","true").csv(path) 
-    return df
 
 def generate_table(n_rows, m_cols, repeated_times, random_max):
     data = list()
@@ -48,9 +46,6 @@ def get_accuracy(realDF, targetDF):
 def getSize(df):
     return df.count()
 
-def write_parquet(df, dest):
-    #df.write.partitionBy("key").format("parquet").save(dest)
-    df.write.parquet(dest)
     
 def data_toDF(data, schema, n_partition):
     sc = spark.sparkContext
@@ -63,30 +58,6 @@ def table_toDF(table, schema, n_partition):
     rdd = sc.parallelize([data for key, data in table.scan()], n_partition)
     dataDF = spark.createDataFrame(rdd, schema=schema)
     return dataDF
-
-
-def main(spark):
-    sc = spark.sparkContext
-    for repeated_times in repeated_times_l:
-        data = generate_table(n_rows, m_cols, repeated_times, random_max)
-        rdd = sc.parallelize(data, n_partition)
-        dataDF = spark.createDataFrame(rdd, schema=['key', 'a', 'b'])
-        #write_parquet(dataDF, 'test_' + str(n_row) + '.parquet')
-        #dataDF = spark.read.parquet('test_' + str(n_row) + '.parquet')
-        #dataDF.createOrReplaceTempView("parquetFile")
-    
-    #rdd = sc.parallelize(data, n_partition)
-    #dataDF = spark.createDataFrame(rdd, schema=['key', 'a', 'b'])
-    #profile(dataDF, ['key', 'a'])
-    #print 'size'
-    #print getSize(dataDF)
-	start_time = time.time()
-        # print 'number of repeated times: ' + str(repeated_times)
-            # print 'accuracy  ' + str(getAccuracy(dataDF, dataDF))
-	# print("--- %s seconds ---" % (time.time() - start_time))
-        profile(dataDF, ['key', 'a'])
-        print get_profile_dict(dataDF, ['key', 'a'])
-
 
 def profile(df, attrs):
     df.describe(attrs).show()
@@ -126,14 +97,28 @@ def get_attributes(df, attrs):
     return data
 
 
-    
+
+def toCSVLine(data):
+    # return ','.join(str(int(d* 10)) for d in data)
+    return ','.join(str(d)for d in data)
+
+def generate_csv_hdfs(spark, row, col, path, num_partition=3):
+    sc = spark.sparkContext
+    rdd = RandomRDDs.uniformVectorRDD(sc, row, col, num_partition)
+    lines = rdd.map(toCSVLine)
+    lines.saveAsTextFile(path)
+
+def main(spark):
+    path = "hdfs://ip-10-0-0-9.us-west-2.compute.internal:9000/user/data/"
+    # file_name = 'test_csv_6G.csv'
+    # generate_csv_hdfs(spark, 6000000000L, 5,  path + file_name)
+    file_name = 'test_csv_1.4G.csv'
+    generate_csv_hdfs(spark, 1400000000, 5,  path + file_name)
+
+
+    # df = hdfs_toDF(path + file_name, False,  ['a', 'b', 'c', 'd', 'e'])
+    # df.show()
 
 if __name__ == "__main__":
-        # Configure OPTIONS
     main(spark)
-
-    #conf = SparkConf().setAppName(APP_NAME).setMaster(MASTER)
-    #sc = SparkContext(conf=conf)
-    #main(sc)
-
 

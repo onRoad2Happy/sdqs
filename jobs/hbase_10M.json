@@ -1,0 +1,8 @@
+{
+    "target_table": "test_table_10MX10", 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "attributes": ["key", "a", "b", "c", "d", "e", "f", "g", "h", "i"] , 
+    "format":"hbase"
+}
+

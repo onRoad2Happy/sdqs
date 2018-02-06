@@ -1,0 +1,10 @@
+
+{
+    "target_table": "test_csv_1M.csv", 
+    "target_id": 6, 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "attributes": ["key", "a", "b", "c", "d"] , 
+    "format": "hdfs"
+}
+

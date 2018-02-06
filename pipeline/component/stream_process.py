@@ -1,18 +1,25 @@
-
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import Row
 from pyspark.sql import SparkSession
-
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
-from generate_simulate_data import get_attributes_summary
-from generate_simulate_data import get_attributes
-import config
 
+import json
+import sys
+import rethinkdb as r
+
+from batch_process import get_attributes_summary
+from batch_process import get_attributes
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import config
+import time
 
 brokers = config.BROKER_CONFIG['brokers']
 APP_NAME = config.BROKER_CONFIG['app_name']
 MASTER = config.SERVER_CONFIG['master']
+zkQuorum = config.zkQuorum 
+
 
 spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
 
@@ -26,16 +33,12 @@ def getSparkSessionInstance(sparkConf):
             .config(conf=sparkConf) \
             .getOrCreate()
     return globals()["sparkSessionSingletonInstance"]
-import json
 
-from pyspark.sql import Row
-
-import sys
-import rethinkdb as r
-def streaming(time, rdd, topic, re_table, conn, attributes):
+def streaming(now, rdd, topic, re_table, conn, attributes):
     try:
-        # conn = r.connect('ec2-34-209-184-21.us-west-2.compute.amazonaws.com', 28015).repl() 
-	print "=========%s========" % str(time)
+        tic = time.clock()
+        rdd.cache()
+	# print "=========%s========" % str(now)
 	spark = getSparkSessionInstance(rdd.context.getConf())
 	# rowRdd = rdd.map(lambda w: json.loads(w))
         result = dict()
@@ -45,11 +48,10 @@ def streaming(time, rdd, topic, re_table, conn, attributes):
         result['topic'] = topic
         result['summary'] = summary
         result['time'] = r.now().to_iso8601()
-        print result
-        # r.table().insert(result).run(conn)
+        toc = time.clock()
+        result['run_time'] = toc -tic
         re_table.insert(result).run(conn)
-        # conn.close()
-        # reTable.insert(result).run()
+        rdd.unpersist()
 
     except:
         print("Unexpected error:", sys.exc_info())
@@ -68,7 +70,6 @@ def store_toDB(time_summary, result, reTable):
 def streaming_profile_toDB(topic, re_table, conn, attributes):
     sc = spark.sparkContext
     ssc = StreamingContext(sc, 5)
-    zkQuorum = 'ec2-52-32-18-38.us-west-2.compute.amazonaws.com:2181'
     numThread = 3
     kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic: numThread})
     kvs.foreachRDD(lambda t, rdd: streaming(t, rdd, topic, re_table, conn, attributes))
@@ -78,23 +79,19 @@ def streaming_profile_toDB(topic, re_table, conn, attributes):
 
 
 
+# def main(spark):
+    # sc = spark.sparkContext
+    # ssc = StreamingContext(sc, 5)
+    # topic = "test_topic"
+    # numThread = 3
+    # kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic: numThread})
 
-def main(spark):
-    sc = spark.sparkContext
+    # kvs.foreachRDD(streaming)
 
-    ssc = StreamingContext(sc, 5)
-    topic = "test_topic"
-    zkQuorum = 'ec2-52-32-18-38.us-west-2.compute.amazonaws.com:2181'
-    numThread = 3
-    kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic: numThread})
-
-    kvs.foreachRDD(streaming)
-
-
-    ssc.start()
-    ssc.awaitTermination()
+    # ssc.start()
+    # ssc.awaitTermination()
 
 
-if __name__ == "__main__":
-    spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
-    main(spark)
+# if __name__ == "__main__":
+    # spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
+    # main(spark)
