@@ -4,6 +4,7 @@ const rethinkdb = require('./config');
 
 module.exports = function(io) {
     result = {};
+
     io.on('connection', (socket)=> {
         socket.on('join', function(room){
             socket.join(room);
@@ -12,8 +13,7 @@ module.exports = function(io) {
                 if (clients.length === 1) {
                     socket.emit('create_room');
                 }
-            })
-            
+            })            
         }) 
         socket.on('getData', function(key) {            
             
@@ -47,7 +47,7 @@ module.exports = function(io) {
             r.connect(rethinkdb, function(err, conn) {
                 if (err) throw err;
                 connection = conn;
-                r.table('test_topic').changes()("new_val")
+                r.table('stream').changes()("new_val")
                 .run(connection, function (err, cursor){
                     cursor.each(function(err, data) {                    
                         if (err) throw err;
@@ -73,12 +73,23 @@ module.exports = function(io) {
                         }                    
                     });
 
+                    
                     socket.on('disconnect', function() {
-                        cursor.close(function(err) {                            
-                            if (err) {
-                                console.log("An error occurred on cursor close");
+                        console.log('should has leave info');
+                        socket.adapter.clients([key], (err, clients) => {
+                            console.log(key);
+                            console.log('in room has clients');
+                            console.log(clients);
+                            if (clients.length === 0) {
+                                cursor.close(function(err) {
+                                    console.log("close connection because last one leave.")                            
+                                    if (err) {
+                                        console.log("An error occurred on cursor close");
+                                    }
+                                })
                             }
-                        })
+                        })    
+                        
                         // conn.close();
                     })
                     
