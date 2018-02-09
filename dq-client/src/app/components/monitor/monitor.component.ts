@@ -139,9 +139,10 @@ export class MonitorComponent implements OnInit {
 
     
         
-    socket.on('disconnected', function(){      
-      socket.emit('disConnect');
-      socket.disconnect();
+    socket.on('disconnect', function(){
+      console.log('browser close');
+      var attr = this.selectedValue;      
+      // socket.disconnect();
     })
 
     
@@ -151,7 +152,6 @@ export class MonitorComponent implements OnInit {
   onSelect(attr: string): void {    
     // this mean new clinet
     this.clearGraph();
-    this.socket.emit('disconnect');
     this.socket.disconnect();
     this.selectedValue = attr;    
     this.createGraph();    
