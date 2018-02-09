@@ -22,15 +22,16 @@ def generate_test_json_table():
     return data
 
 print BOOTSTRAP_SERVERS
-# def main():
-producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS)
-while(True):
-    print 'sent topic'
-    for i in range(50000):
-        producer.send('test_topic', str(i) + ',' + str(i+1) + ',' + str(i+2))
-        # producer.send('test_topic', json.dumps({'a': 2, 'b': 3, 'c': 4}))
+BATCH_SIZE = 16384
+def main():
+    # producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS, batch_size=BATCH_SIZE, linger_ms=10)
+    producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS, batch_size=BATCH_SIZE)
+    while(True):
+        for i in range(50000):
+                producer.send('stream', str(i) + ',' + str(i+1) + ',' + str(i+2))
+            # producer.send('test_topic', json.dumps({'a': 2, 'b': 3, 'c': 4}))
 
 
 
-# if __name__ == "__main__":
-    # main()
+if __name__ == "__main__":
+    main()

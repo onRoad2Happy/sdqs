@@ -24,4 +24,3 @@ BOOTSTRAP_SERVERS='ec2-xxxxxxxxxxxxxxxxxxxxx.compute.amazonaws.com:9092'
 METRIC_TABLE = 'test_table'
 DB_NAME = 'test'
 
-

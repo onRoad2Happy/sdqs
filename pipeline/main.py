@@ -50,7 +50,8 @@ def submit_batch_job(conn, DB_NAME, METRIC_TABLE, job, num_tables):
     df = None
     if job['format'] == 'hdfs':
         path = HDFS_PATH + job['target_table']
-        df = hdfs_toDF(path)
+        df = hdfs_toDF(path, False, attributes)
+        # df = hdfs_toDF(path)
     else:
         data = get_data(job['target_table'])
         df = data_toDF(data, attributes, 2)
@@ -119,13 +120,7 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input", dest="file_path", required=True, 
             type=extant_file, help="required the job json file")
     args = parser.parse_args()
-    # job = json.load(open(args.file_path))
-    job = {
-        'target_table': 'test_topic', 
-        'jobs': ['profile'],
-        'data_type': 'stream', 
-        'attributes': ['a', 'b', 'c']
-    }
+    job = json.load(open(args.file_path))
 
     if job['data_type'] == 'batch':
         submit_batch_job(conn, DB_NAME, METRIC_TABLE, job, num_tables)
