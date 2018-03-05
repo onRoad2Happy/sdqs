@@ -25,6 +25,7 @@ const redis = require('socket.io-redis');
 const io = socketIO(http);
 
 const monitorSocketService = require('./services/monitorService.js')(io);
+const profileSocketService = require('./services/profileService.js')(io);
 
 const server = http.createServer(app);
 io.attach(server);

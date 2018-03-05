@@ -3,11 +3,9 @@ const rethinkdb = require('./config');
 
 
 module.exports = function(io) {
-    result = {};
 
     io.on('connection', (socket)=> {
-        socket.on('joinMonitor', function(room){
-            console.log('join monitor');
+        socket.on('join', function(room){
             socket.join(room);
             socket.adapter.clients([room], (err, clients) => {
                 console.log(clients);
@@ -16,60 +14,24 @@ module.exports = function(io) {
                 }
             })            
         }) 
-        socket.on('getGraphData', function(key) {                        
-            result[key] = [
-                {
-                    "color": "#ff8df5",
-                    "name": 'count',
-                    "data": []
-                },
-                {
-                    "color": "#fdd4ed",
-                    "name": 'max',
-                    "data": []
-                },
-                {
-                    "color": "#ffe38d",
-                    "name": 'min',
-                    "data": []
-                },
-                {
-                    "color": "#ffeea5",
-                    "name": 'stddev',
-                    "data": []
-                },
-                {
-                    "color": "#ffd381",
-                    "name": 'mean',
-                    "data": []
-                },        
-            ]
+
+
+        socket.on('getData', function(key) {            
+            
             r.connect(rethinkdb, function(err, conn) {
                 if (err) throw err;
                 connection = conn;
-                r.table('graph').changes()("new_val")
+                console.log(key);
+                r.table(key).changes()("new_val")
                 .run(connection, function (err, cursor){
                     cursor.each(function(err, data) {                    
                         if (err) throw err;
                         else {
                             var time = data['time'];
                             const now = (new Date).getTime() / 1000;
-                                var element = data['summary'][key];
-                                result[key][0]["data"].push({'x': now, 'y': + element['count']});
-                                result[key][1]["data"].push({'x': now, 'y': + element['max']});
-                                result[key][2]["data"].push({'x': now, 'y': + element['min']});
-                                result[key][3]["data"].push({'x': now, 'y': + element['stddev']});
-                                result[key][4]["data"].push({'x': now, 'y': + element['mean']});                            
-                                if (result[key][0]["data"].length > 20) {
-                                    result[key][0]["data"].shift();
-                                    result[key][1]["data"].shift();
-                                    result[key][2]["data"].shift();
-                                    result[key][3]["data"].shift();
-                                    result[key][4]["data"].shift();                        
-                                }   
-                                console.log('here');
-                                io.in(key).emit(key, result[key]);                                    
-                                
+                            var element = data['summary'];
+                            console.log(element);
+                            io.in(key).emit(key, element);                                    
                         }                    
                     });
 

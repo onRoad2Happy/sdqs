@@ -13,6 +13,8 @@ import { TableDetailComponent } from './components/table-detail/table-detail.com
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { MonitorComponent } from './components/monitor/monitor.component';
 import { StreamDataService } from './services/stream-data.service';
+import { ProfileComponent } from './components/profile/profile.component';
+import { StreamAccuracyComponent } from './components/stream-accuracy/stream-accuracy.component';
 
 
 @NgModule({
@@ -22,7 +24,9 @@ import { StreamDataService } from './services/stream-data.service';
     NewTableComponent,
     TableDetailComponent,
     NavBarComponent,
-    MonitorComponent
+    MonitorComponent,
+    ProfileComponent,
+    StreamAccuracyComponent
   ],
   imports: [
     BrowserModule,

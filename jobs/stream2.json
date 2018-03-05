@@ -1,0 +1,9 @@
+{
+    "target_table": "stream", 
+    "target_id": 1, 
+    "jobs": ["profile"],
+    "data_type": "stream", 
+    "attributes": ["a", "b", "c"],
+    "rule": "select a, sum(a) as sum, count(a) as total from stream group by a",
+    "topic": "stream"
+}

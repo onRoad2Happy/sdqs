@@ -5,15 +5,20 @@ import { Observable } from 'rxjs/Rx';
 
 import 'rxjs/add/operator/toPromise';
 import { Attribute } from '../data-structure/attribute';
+import { of } from 'rxjs/observable/of';
+
 declare const io: any;
-
-
 
 @Injectable()
 export class StreamDataService {
-  private _attributeSource = new BehaviorSubject<Attribute[]>([]);
-  // streamSocket = io();
 
-  constructor(private http: Http) { }
+  private _dataSource = new BehaviorSubject<{}>({});
+
+  socket: any;
+
+  constructor() { }
   
 }
+
+
+

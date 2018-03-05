@@ -3,6 +3,8 @@ from data_ingestion.batch.generate_test_data import get_table
 from component.batch_process import data_toDF
 from component.batch_process import get_accuracy 
 from component.batch_process import get_attributes_summary 
+from component.batch_process import get_user_defined_profile
+
 from component.stream_process import streaming_profile_toDB
 from component.batch_process import hdfs_toDF 
 
@@ -45,20 +47,28 @@ def submit_batch_job(conn, DB_NAME, METRIC_TABLE, job, num_tables):
     result['name'] = job['target_table']
     result['type'] = job['data_type']
     result['jobs'] = job['jobs']
-    result['attributes'] = job['attributes']
-    attributes = result['attributes']
+    
     df = None
+    attributes = None
     if job['format'] == 'hdfs':
         path = HDFS_PATH + job['target_table']
-        df = hdfs_toDF(path, False, attributes)
-        # df = hdfs_toDF(path)
+        if 'attributes' in job:
+            attributes = result['attributes']
+            result['attributes'] = job['attributes']
+            df = hdfs_toDF(path, False, attributes)
+        else:
+            df = hdfs_toDF(path, True)
     else:
         data = get_data(job['target_table'])
         df = data_toDF(data, attributes, 2)
 
     for job_type in job['jobs']:
         if job_type == 'profile':
-            result['summary'] = get_attributes_summary(df, attributes)
+            if 'rule' not in job:
+                result['summary'] = get_attributes_summary(df, attributes)
+            else:
+                result['summary'] = get_user_defined_profile(df, job['rule'])
+                result['rule'] = job['rule']
 
         if job_type == 'accuracy':
             source_data = get_data(job['source_table'])
@@ -82,18 +92,26 @@ def submit_stream_job(conn, DB_NAME, METRIC_TABLE, job, num_tables):
     result['jobs'] = job['jobs']
     result['type'] = job['data_type']
     result['attributes'] = job['attributes']
-    create_insert(DB_NAME, METRIC_TABLE, result, conn)
+    result['rule'] = job['rule']
+    
     create_table_if_not_exist(DB_NAME, job['target_table'], conn)
 
     for job_type in job['jobs']:
         if job_type == 'profile':
             # get data from hbase transform to spark then save output to rethinkdb
+            create_insert(DB_NAME, METRIC_TABLE, result, conn)
             re_table = r.table(job['target_table'])
-            streaming_profile_toDB(job['target_table'], re_table, conn, job['attributes'])
+            streaming_profile_toDB(job['topic'], re_table, conn, job['attributes'], job['rule'], job_type)
 
         if job_type == 'accuracy':
             # get second table from hbase transform to spark
-            pass
+            re_table = r.table(job['target_table'])
+            result['target_table'] = job['target_table']
+            result['source_table'] = job['source_table']
+            create_insert(DB_NAME, METRIC_TABLE, result, conn)
+            print 'in accuracy'
+            print job['topic']
+            streaming_profile_toDB(job['topic'], re_table, conn, job['attributes'], job['rule'], job_type)
 
         if job_type == 'anomaly':
             pass
@@ -120,6 +138,7 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input", dest="file_path", required=True, 
             type=extant_file, help="required the job json file")
     args = parser.parse_args()
+    print args.file_path
     job = json.load(open(args.file_path))
 
     if job['data_type'] == 'batch':

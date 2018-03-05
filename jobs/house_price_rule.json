@@ -1,0 +1,8 @@
+{
+    "target_table": "house_price.csv", 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "format": "hdfs",
+    "rule": "select mean(SalePrice) as averageSalePrice, YearBuilt from target group by YearBuilt order by YearBuilt"
+}
+

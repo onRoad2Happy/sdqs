@@ -13,7 +13,8 @@ from pyspark.mllib.random import RandomRDDs
 
 MASTER = config.SERVER_CONFIG['master']
 APP_NAME = config.SERVER_CONFIG['app_name'] 
-spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
+# spark = SparkSession.builder.appName(APP_NAME).master(MASTER).getOrCreate()
+spark = SparkSession.builder.appName(APP_NAME).getOrCreate()
 
 
 def hdfs_toDF(path, has_header=True, attributes=None):
@@ -22,7 +23,7 @@ def hdfs_toDF(path, has_header=True, attributes=None):
         schema = StructType([StructField(key, StringType(), True) for key in attributes])
 
     if has_header:
-        return spark.read.option("header","true").option("inferSchema", "true").csv(path) 
+        return spark.read.option("header","true").option("inferSchema", "true").option("nullValue", "NA").csv(path) 
     else:
         return spark.read.option("header", "false").schema(schema).csv(path) 
 
@@ -42,6 +43,7 @@ def generate_table(n_rows, m_cols, repeated_times, random_max):
 
 def get_accuracy(realDF, targetDF):
     return 1.0 - realDF.subtract(targetDF).count() * 1.0 / realDF.count()
+
    
 def getSize(df):
     return df.count()
@@ -65,7 +67,12 @@ def profile(df, attrs):
 # {'a': {0: u'1000050', 1: u'10.501937903104844', 2: u'5.764012905602232', 3: u'1', 4: u'20'}, 'key': {0: u'1000050', 1: u'10000.0', 2: u'5773.794246567651', 3: u'0', 4: u'20000'}, 'summary': {0: u'count', 1: u'mean', 2: u'stddev', 3: u'min', 4: u'max'}}{'a': {0: u'1000050', 1: u'10.501937903104844', 2: u'5.764012905602232', 3: u'1', 4: u'20'}, 'key': {0: u'1000050', 1: u'10000.0', 2: u'5773.794246567651', 3: u'0', 4: u'20000'}, 'summary': {0: u'count', 1: u'mean', 2: u'stddev', 3: u'min', 4: u'max'}}i
 
 def get_attributes_summary(df, attrs):
-    data = df.describe(attrs).toPandas().to_dict()
+    data = None
+    if attrs is None:
+        data = df.describe().toPandas().to_dict()
+    else:
+        data = df.describe(attrs).toPandas().to_dict()
+
     for attr in data:
         if attr != 'summary':
             summary = data[attr]
@@ -82,6 +89,10 @@ def get_attributes_summary(df, attrs):
         attributes.append(data[attr])
     return attributes
 
+def get_user_defined_profile(df, rule):
+    df.createOrReplaceTempView('target')
+    summary = spark.sql(rule)
+    return summary.toPandas().to_dict('records')
 
 def get_attributes(df, attrs):
     data = df.describe(attrs).toPandas().to_dict()

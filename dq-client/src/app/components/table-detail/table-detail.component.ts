@@ -10,7 +10,9 @@ import { Table } from '../../data-structure/table';
 export class TableDetailComponent implements OnInit {
   table: Table;
   selectedValue: string;
- 
+  view = [];
+  attrs = [];
+
   constructor(
     private route: ActivatedRoute,
     @Inject('data') private data
@@ -20,7 +22,13 @@ export class TableDetailComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {      
       // this.table = this.data.getTable(+params['id']);
       this.data.getTable(+params['id'])
-      .then(table => this.table = table);
+      .then(table => {
+        this.table = table;
+        this.view = table['summary'];
+        if (this.view && this.view.length !== 0) {
+          this.attrs = Object.keys(this.view[0]);
+        }      
+      });
     });
 
 

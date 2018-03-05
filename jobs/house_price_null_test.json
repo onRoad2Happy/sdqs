@@ -1,0 +1,8 @@
+{
+    "target_table": "house_price.csv", 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "format": "hdfs",
+    "rule": "select count(Alley) as alleyNotNull, count(1) - count(Alley) as alleyNull, count(1) as total, 100 * (count(1) - count(Alley)) / count(1) as PercentNull from target"
+}
+

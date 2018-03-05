@@ -1,0 +1,7 @@
+{
+    "target_table": "house_price.csv", 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "format": "hdfs"
+}
+

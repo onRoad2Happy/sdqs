@@ -1,7 +1,8 @@
 {
-    "target_table": "stream", 
-    "target_id": 1, 
+    "target_table": "graph", 
     "jobs": ["profile"],
     "data_type": "stream", 
-    "attributes": ["a", "b", "c"]
+    "attributes": ["a", "b", "c"],
+    "rule": "profile",
+    "topic": "graph"
 }

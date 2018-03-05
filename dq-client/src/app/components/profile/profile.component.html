@@ -1,0 +1,14 @@
+<table class="table table-striped">
+  <thead>
+    <tr >
+      <th scope="col"  *ngFor="let attribute of table">{{attribute}} </th>
+      
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr *ngFor="let item of data">
+      <td *ngFor="let attribute of table">{{item[attribute]}}</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,10 @@
+{
+    "target_table": "user_info_target", 
+    "jobs": ["accuracy"],
+    "data_type": "stream", 
+    "source_table": "user_info_source", 
+    "attributes": ["id", "account_name", "name", "address", "mail", "district", "code"],
+    "rule": "target.id = source.id and target.address = source.address and target.mail = source.mail and target.district = source.district",
+    "format":"kafka",
+    "topic":"user_info"
+}

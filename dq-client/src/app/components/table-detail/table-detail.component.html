@@ -8,9 +8,26 @@
       <div class="panel panel-default" *ngIf="table.name">
         <!-- Default panel contents -->
         <div class="panel-heading" >target table: {{table.name}} {{table.stream_name}}</div>
-      
-        <div class="table-responsive">
+        <div class="panel-body" *ngIf="table.rule">{{table.rule}}</div>
 
+        <table class="table table-striped" *ngIf="table.rule">
+            <thead>
+              <tr >
+                <th scope="col"  *ngFor="let attribute of attrs">{{attribute}} </th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of view">
+                <td *ngFor="let attribute of attrs">{{item[attribute]}}</td>
+              </tr>
+          
+            </tbody>
+          </table>
+          
+
+
+        <div class="table-responsive" *ngIf="table.rule === undefined">
         <!-- Table -->
         <table class="table table-hover table-responsive" >
           <thead>
@@ -38,7 +55,8 @@
         </div>
 
         <div class="panel-heading" *ngIf="table.source_name" >source table : {{table.source_name}}</div>
-        <div class="table-responsive">
+
+        <div class="table-responsive" *ngIf="table.rule === undefined">
 
         <!-- Table -->
         <table class="table table-hover" *ngIf="table.source_name">
@@ -71,7 +89,38 @@
   </div>  
 
     <div class="hidden-x col-sm-10 col-md-8" *ngIf="table.stream_name">
-        <app-monitor></app-monitor>
+      
+      
+      <div *ngIf="table.rule === 'profile'">
+          <app-monitor></app-monitor>
+      </div>
+      
+      
+      <div *ngIf="table.rule !== 'profile'">
+        
+
+        <div class="panel panel-default">
+            <div class="panel-heading" *ngIf="table.jobs.indexOf('accuracy') >= 0">
+              <li>target table: {{table.target_table}}</li>
+              <li>source table: {{table.source_table}}</li>
+               </div>
+
+            <div class="panel-body">{{table.rule}}</div>
+        </div>
+
+
+        <div *ngIf="table.jobs.indexOf('accuracy') >= 0">
+            <app-stream-accuracy></app-stream-accuracy>
+        </div>
+
+        <div *ngIf="table.jobs.indexOf('profile') >= 0">
+          <app-profile></app-profile>
+        </div>
+
+
+        
+      </div>
+      
     </div>
 
 </div>

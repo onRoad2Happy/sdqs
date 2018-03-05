@@ -29,10 +29,10 @@ export class MonitorComponent implements OnInit {
 
     var socket = this.socket;
     var select_attr = this.selectedValue;
-    socket.emit('join', select_attr);
+    socket.emit('joinMonitor', select_attr);
     
     socket.on('create_room', function(){
-      socket.emit('getData', select_attr);
+      socket.emit('getGraphData', select_attr);
     })
 
     var attr = this.selectedValue;
@@ -41,9 +41,6 @@ export class MonitorComponent implements OnInit {
       request: function() {
         const thisData = this;    
         socket.on(attr, function (data) {
-          // console.log("Got some fancy Websocket data: ");
-          // console.log(attr);
-          // console.log(data);
           thisData.success(data);
         });        
       }
