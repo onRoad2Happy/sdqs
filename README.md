@@ -6,7 +6,7 @@ data quality is important not only in batch processing but also in streaming, I 
 ## Getting Started
 
 ```
-spark-submit main.py -i jobs/batch_1k.json
+spark-submit  --jars ../lib/spark-streaming-kafka-0-8-assembly_2.11-2.0.1.jar main.py -i ../jobs/xxx.json
 ```
 
 
@@ -124,9 +124,15 @@ in batch, need to make sure we have the table in hbase or in hdfs
 in stream, need to make sure the producer is started
 
 
-### To run batch job
+### To run job
+### Run Kafka producer
 ```
-spark-submit job.json
+python kafka_producer.py
+```
+
+
+```
+spark-submit  --jars ../lib/spark-streaming-kafka-0-8-assembly_2.11-2.0.1.jar main.py -i ../jobs/xxx.json
 ```
 
 After that you could check the result in rethinkdb web console
@@ -136,12 +142,13 @@ http://xxxxxxxxxxx.us-west-2.compute.amazonaws.com:8080/#dataexplorer
 example job.json
 ```
 {
-    "target_table": "test_csv_1k.csv",
+    "target_table": "house_price.csv", 
     "jobs": ["profile"],
-    "data_type": "batch",
-    "attributes": ["key", "a", "b", "c", "d"] ,
+    "data_type": "batch", 
     "format": "hdfs"
 }
+
+
 ```
 
 target_table is the table name in hbase or in hdfs
@@ -149,26 +156,31 @@ jobs is a list of quality test, we currently have profile and accuracy test now
 you could set format for hdfs or hbase
 ```
 {
-    "target_table": "first table name",
-    "jobs": ["profile", "accuracy"],
-    "data_type": "batch",
-    "attributes": ["a", "b"],
-    "source_table": "second table name",
-    "source_id": 4,
-    "format":"hbase"
+    "target_table": "house_price.csv", 
+    "jobs": ["profile"],
+    "data_type": "batch", 
+    "format": "hdfs",
+    "rule": "select mean(SalePrice) as averageSalePrice, YearBuilt from target group by YearBuilt order by YearBuilt"
 }
+
+
 ```
 ### To run stream job with spark and kafka
 ```
 example job.json
 {
-    "target_table": "test_topic",
-    "target_id": 1,
+    "target_table": "stream", 
+    "target_id": 1, 
     "jobs": ["profile"],
-    "data_type": "stream",
-    "attributes": ["a", "b", "c"]
+    "data_type": "stream", 
+    "attributes": ["a", "b", "c"],
+    "rule": "select a, sum(a) as sum, count(a) as total from stream group by a",
+    "topic": "stream"
 }
+
 ```
+
+
 
 
 ## Deployment
